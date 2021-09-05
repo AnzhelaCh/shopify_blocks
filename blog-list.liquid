@@ -1,0 +1,139 @@
+
+            <div class="blog_listing__main {% if settings.sidebar_toggle %}sidebar_layout{% else %}nosidebar_layout{% endif %}">
+                <div class="wrapper">
+                   <h2 class="blogTitle">{{ blog.title }}</h2>
+                    <div class="blogDescription">
+                        {{ section.settings.blogDescription }}
+                    </div>
+                                    <article class="article_item item_main">
+                                        {% for article in blogs[section.settings.blog_count].articles %}
+                                            {% if forloop.first == true %}
+                                                <a href="{{ blog.url }}" class="article_image">
+                                                    {% if article.image %}
+                                                        {% if settings.sidebar_toggle %}
+                                                            <img class="blur-up lazyload img-fluid w-100" src="{{ article.image.src | img_url: '100x100', crop: section.settings.img_alignment }}" data-src="{{ article.image.src | img_url: '880x545', crop: section.settings.img_alignment }}" alt="{{ article.image.alt }}">
+                                                        {% else %}
+                                                            <img class="blur-up lazyload img-fluid w-100" src="{{ article.image.src | img_url: '100x100', crop: section.settings.img_alignment }}" data-src="{{ article.image.src | img_url: '1170x665', crop: section.settings.img_alignment }}" alt="{{ article.image.alt }}">
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <div class="img_placeholder__wrap">{{ 'image' | placeholder_svg_tag: 'img_placeholder'  }}</div>
+                                                    {% endif %}
+                                                </a>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </article>
+                                </div>
+            </div>
+
+                    <div class="swiper-container mySwiper">
+                            <div class="swiper-wrapper">
+                                {% for article in blogs[section.settings.blog_count].articles %}
+                                {% if forloop.index > 1 %}
+                                    <article class="swiper-slide article_itemContent">
+                                                <div class="article_image">
+                                                    {% if article.image %}
+                                                        {% if settings.sidebar_toggle %}
+                                                            <img class="blur-up lazyload img-fluid w-100" src="{{ article.image.src | img_url: '100x100', crop: section.settings.img_alignment }}" data-src="{{ article.image.src | img_url: '880x545', crop: section.settings.img_alignment }}" alt="{{ article.image.alt }}">
+                                                        {% else %}
+                                                            <img class="blur-up lazyload img-fluid w-100" src="{{ article.image.src | img_url: '100x100', crop: section.settings.img_alignment }}" data-src="{{ article.image.src | img_url: '380x324', crop: section.settings.img_alignment }}" alt="{{ article.image.alt }}">
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <div class="img_placeholder__wrap">{{ 'image' | placeholder_svg_tag: 'img_placeholder'  }}</div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="article_content">
+                                                    <p class="article_info mt-0 d-none">
+                                                        <span>By {{ article.author }}</span><span> on <time class="article_time" datetime="{{ article.published_at | date: '%Y-%m-%dT%H:%M' }}">{{ article.published_at | date: '%B %d, %Y' }}</time></span>
+                                                    </p>
+                                                    <h3 class="article_title mb-1">
+                                                        <a href="{{ article.url }}">{{ article.title | truncate: 50 }}</a>
+                                                    </h3>
+                                                </div>
+                                    </article>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% if section.settings.pagination %}
+                            <div class="swiper-pagination"></div>
+                            {% endif %}
+                        </div>
+
+
+
+
+
+
+
+{% schema %}
+{
+"name": "Blog with carousel",
+"class": "section_template section_template__blog bl_carousel",
+"settings": [
+{
+"type": "blog",
+"id": "blog_count",
+"label": "Blog"
+},
+{
+"type": "richtext",
+"id": "blogDescription",
+"label": "Blog description",
+"default": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>"
+},
+{
+"type": "select",
+"id": "img_alignment",
+"label": "Images alignment",
+"options": [
+{
+"value": "top",
+"label": "Top"
+},
+{
+"value": "center",
+"label": "Middle"
+},
+{
+"value": "bottom",
+"label": "Bottom"
+}
+]
+},
+{
+"type": "checkbox",
+"id": "pagination",
+"label": "Show pagination",
+"default": false
+}
+]
+}
+{% endschema %}
+<script>
+    var swiper = new Swiper(".mySwiper", {
+        slidesPerView: 3,
+        spaceBetween: 30,
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+        },
+        breakpoints: {
+            320: {
+                slidesPerView: 2,
+                spaceBetween: 5
+            },
+            768: {
+                slidesPerView: 3,
+                spaceBetween: 10
+            },
+            992: {
+                slidesPerView: 3,
+                spaceBetween: 15
+            },
+            1200: {
+                slidesPerView: 4,
+                spaceBetween: 20
+            }
+        },
+    });
+</script>
+

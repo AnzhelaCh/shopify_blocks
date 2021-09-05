@@ -1,0 +1,215 @@
+{% if section.settings.hide_section == false %}
+    <div class="wrapper {% unless section.settings.bg_size == 'none' %}{{ section.settings.bg_size }}{% endunless %}">
+        <h2 {% if section.settings.title_alignment %}style="text-align: {{ section.settings.title_alignment }} ;" {% endif %}>
+            {{ section.settings.section_title }}
+        </h2>
+        <h4 {% if section.settings.title_alignment %}style="text-align: {{ section.settings.title_alignment }} ;" {% endif %}>{{ section.settings.subtitle }}</h4>
+        <div class="container-s">
+            <div class="itemList">
+                {% for block in section.blocks %}
+
+
+                    {% case block.type %}
+                        {% when 'item_plus' %}
+                            <div class="description ">
+                                <div class="counter" data-count="{{ block.settings.number_plus }}">1</div>
+                                <span>{{ block.settings.information }}</span>
+                            </div>
+
+                        {% when 'item_custom' %}
+                            <div class="description ">
+                                <div class="counter number_2" data-count="{{ block.settings.number_custom }}">2000</div>
+                                <span>{{ block.settings.information_custom }}</span>
+                            </div>
+
+                        {% when 'item_k' %}
+                            <div class="description ">
+                                <div class="counter number_3" data-count="{{ block.settings.number_k }}">1</div>
+
+                                <span>{{ block.settings.information_k }}</span>
+                            </div>
+
+                        {% when 'item_funding' %}
+                            <div class="description ">
+                                <div class="itemWrapper">
+                                    <span>$</span>
+                                    <div class="counter number_4" data-count="{{ block.settings.number_funding }}">1</div>
+
+                                </div>
+                                <span>{{ block.settings.information_funding }}</span>
+
+
+                            </div>
+                    {% endcase %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+{% endif %}
+
+{% schema %}
+{
+"name": "Reason counter",
+"class": "reason_counter",
+"settings": [
+{
+"type": "checkbox",
+"id": "hide_section",
+"label": "Hide section",
+"default":   false
+},
+{
+"id": "section_title",
+"type": "text",
+"label": "Title",
+"default": "Some facts"
+},
+{
+"id": "subtitle",
+"type": "text",
+"label": "Subtitle",
+"default": "Unlike product and catalog pages, which typically"
+},
+{
+"type": "select",
+"id": "title_alignment",
+"options": [
+{ "value": "left", "label": "Left"},
+{ "value": "center", "label": "Center"},
+{ "value": "right", "label": "Right"}
+],
+"label": "Title alignment"
+}
+],
+"max_blocks": 4,
+"blocks": [
+{
+"type": "item_plus",
+"name": "Item +",
+"settings": [
+{
+"id": "number_plus",
+"type": "number",
+"label": "Number",
+"default": 18,
+"info": "Only number"
+},
+{
+"id": "information",
+"type": "text",
+"label": "Information",
+"default": "Team members"
+}
+]
+},
+{
+"type": "item_custom",
+"name": "Item",
+"settings": [
+{
+"id": "number_custom",
+"type": "number",
+"label": "Number",
+"default": 2016,
+"info": "Only number"
+},
+{
+"id": "information_custom",
+"type": "text",
+"label": "Information",
+"default": "Year founded"
+}
+]
+},
+{
+"type": "item_k",
+"name": "Item k",
+"settings": [
+{
+"id": "number_k",
+"type": "number",
+"label": "Number",
+"default": 12,
+"info": "Only number"
+},
+{
+"id": "information_k",
+"type": "text",
+"label": "Information",
+"default": "Customers"
+}
+]
+},
+{
+"type": "item_funding",
+"name": "Item funding",
+"settings": [
+{
+"id": "number_funding",
+"type": "number",
+"label": "Number",
+"default": 6,
+"info": "Only number"
+},
+{
+"id": "information_funding",
+"type": "text",
+"label": "Information",
+"default": "In total funding"
+}
+]
+}
+],
+"presets": [
+{
+"name": "Reason counter",
+"category": "Reason counter",
+"blocks": [],
+"settings": {}
+}
+]
+
+}
+
+{% endschema %}
+
+<script>
+    var number = document.querySelector('.itemList');
+    var  numberTop = number.getBoundingClientRect().top;
+
+    window.addEventListener('scroll', function onScroll() {
+        let x = window.innerHeight - 150;
+        if(window.pageYOffset > numberTop - x) {
+            this.removeEventListener('scroll', onScroll);
+            $('.counter').each(function() {
+                var $this = $(this),
+                    countTo = $this.attr('data-count');
+
+                $({ countNum: $this.text()}).animate({
+                        countNum: countTo
+                    },
+
+                    {
+
+                        duration: 700,
+                        easing:'linear',
+                        step: function() {
+                            $this.text(Math.floor(this.countNum));
+                        },
+                        complete: function() {
+                            $this.text(this.countNum);
+                        }
+
+                    });
+
+
+
+            });
+        }
+    });
+
+
+
+</script>

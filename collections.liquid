@@ -1,0 +1,233 @@
+{%- assign img_alignment = section.settings.img_alignment -%}
+
+<h1 class="page_heading">{{ page_title }}</h1>
+{% for block in section.blocks %}
+	{% case block.type %}
+		{% when 'one_image' %}
+			{%- assign item_size = '1220x775' -%}
+			<div class="row {% if block.settings.reverse %} flex-row-reverse{% endif %}">
+				{% for collection in collections %}
+					{% if collection.handle == collections[block.settings.collection].handle %}
+						<div class="collection_desc offset-lg-1 d-flex flex-column justify-content-center col-6 offset-0 {% if block.settings.reverse %} col-lg-6 section_reverse pr-3 pl-0{% else %}col-lg-3 pr-0 pl-4 pl-lg-0{% endif %}">
+							<div class="wrapper">
+								<div class="collection_caption">
+									{% assign collection = collections[block.settings.collection] %}
+									<h2 class="collection_title mb-0 mt-0">
+										<a href="{{ collection.url }}">
+											{{ collection.title | upcase }}
+										</a>
+										</h2>
+								</div>
+								<div class="collection_info">
+									<p>
+										{{ block.settings.description | upcase }}
+									</p>
+								</div>
+							</div>
+
+						</div>
+
+						<div class="collection_img col-6 {% if block.settings.reverse %} col-lg-5  pr-0{% else %}col-lg-8 section_pic{% endif %}">
+									{% include 'collection-listing-item' with item_size, img_alignment %}
+									<div>
+									</div>
+						</div>
+					{% endif %}
+				{% endfor %}
+			</div>
+
+		{% when 'two_collection' %}
+		{%- assign item_size = '520x650' -%}
+				<div class="container-lg section__wrapper">
+					<div class="row">
+						<div class="collection_img col-lg-4 col-6">
+							{% for collection in collections %}
+								{% if collection.handle == collections[block.settings.collection_first].handle %}
+									{% include 'collection-listing-item' with item_size, img_alignment %}
+									<div>
+									</div>
+
+									<div class="collection_desc col-lg-10 offset-lg-3 pr-0 pl-0">
+										<div class="collection_caption">
+												<h2 class="collection_title mb-0">
+													<a href="{{ collection.url }}">
+														{{ block.settings.collection_first | upcase }}
+													</a>
+												</h2>
+										</div>
+
+										<div class="collection_info">
+											<p>
+												{{ block.settings.description_first | upcase }}
+											</p>
+										</div>
+									</div>
+								{% endif %}
+							{% endfor %}
+
+
+						</div>
+
+						<div class="collection_img offset-lg-1 col-lg-4 col-6 offset-0 st_pic">
+							{% for collection in collections %}
+								{% if collection.handle == collections[block.settings.collection_second].handle %}
+									{% include 'collection-listing-item' with item_size, img_alignment %}
+									<div>
+									</div>
+
+									<div class="collection_desc col-lg-10 offset-lg-3 pr-0 pl-0">
+										<div class="collection_caption">
+												<h2 class="collection_title mb-0">
+													<a href="{{ collection.url }}">
+														{{ block.settings.collection_second | upcase }}
+													</a>
+												</h2>
+										</div>
+
+										<div class="collection_info">
+											<p>
+												{{ block.settings.description_second | upcase }}
+											</p>
+										</div>
+									</div>
+									{% endif %}
+							{% endfor %}
+
+						</div>
+					</div>
+				</div>
+
+		{% when 'single_collection_type_2' %}
+		{%- assign item_size = '807x775' -%}
+			<div class="container-lg single__img">
+				<div class="row">
+					<div class="collection_img offset-lg-2 col-lg-6">
+						{% for collection in collections %}
+							{% if collection.handle == collections[block.settings.collection].handle %}
+								{% include 'collection-listing-item' with item_size, img_alignment %}
+								<div>
+								</div>
+								<div class="collection_desc col-lg-12 offset-lg-2 d-flex flex-column justify-content-center pt-4 mt-1">
+									<div class="collection_caption">
+										{% assign collection = collections[block.settings.collection] %}
+										<h2 class="collection_title mb-0">
+											<a href="{{ collection.url }}">
+												{{ collection.title | upcase }}
+											</a>
+										</h2>
+									</div>
+
+									<div class="collection_info col-10 pl-0">
+										<p>
+											{{ block.settings.description | upcase }}
+										</p>
+									</div>
+								</div>
+							{% endif %}
+						{% endfor %}
+
+					</div>
+
+
+				</div>
+			</div>
+
+	{% endcase %}
+
+{%endfor%}
+
+
+
+{% schema %}
+{
+	"name": "Collection listing",
+	"class": "section_template__collections-listing",
+	"settings": [
+		{
+			"type": "select",
+			"id": "img_alignment",
+			"label": "Image alignment",
+			"options": [
+				{
+					"value": "top",
+					"label": "Top"
+				},
+				{
+					"value": "center",
+					"label": "Middle"
+				},
+				{
+					"value": "bottom",
+					"label": "Bottom"
+				}
+			]
+		}
+	],
+	"blocks": [
+		{
+			"type": "one_image",
+			"name": "Single collection",
+			"settings": [
+			{
+			"type": "collection",
+			"id": "collection",
+			"label": "Collection name"
+			},
+			{
+			"type": "text",
+			"id": "description",
+			"label": "Description"
+			},
+{
+"type": "checkbox",
+"id": "reverse",
+"label": "Section reverse",
+"default": false
+}
+			]
+		},
+		{
+			"type": "two_collection",
+			"name": "Two collections",
+			"settings": [
+				{
+				"type": "collection",
+				"id": "collection_first",
+				"label": "Collection name"
+				},
+				{
+				"type": "text",
+				"id": "description_first",
+				"label": "Description"
+				},
+				{
+				"type": "collection",
+				"id": "collection_second",
+				"label": "Second collection name"
+				},
+				{
+				"type": "text",
+				"id": "description_second",
+				"label": "Second description"
+				}
+			]
+		},
+		{
+			"type": "single_collection_type_2",
+			"name": "Single collection type 2",
+			"settings": [
+			{
+			"type": "collection",
+			"id": "collection",
+			"label": "Collection name"
+			},
+			{
+			"type": "text",
+			"id": "description",
+			"label": "Description"
+			}
+			]
+		}
+]
+}
+{% endschema %}

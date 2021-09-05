@@ -1,0 +1,196 @@
+{% if section.settings.hide_section == false %}
+    <div class="container">
+        <div class="headerInfoWrapper">
+            {% if section.settings.section_subtitle.size > 0 %}
+                <p class="subtitle">{{ section.settings.section_subtitle }}</p>
+            {% endif %}
+
+            {% if section.settings.section_title.size > 0 %}
+                <h2>{{ section.settings.section_title }}</h2>
+            {% endif %}
+
+            {% if section.settings.section_text.size > 0 %}
+                <div class="textInfo">{{ section.settings.section_text }}</div>
+            {% endif %}
+        </div>
+        <div class="row">
+
+            {% for block in section.blocks %}
+
+                {% case block.type %}
+
+                    {% when 'youtube' %}
+
+                        <div class="videoWrapper section_slideshow container">
+                            <div class="index_section_slideshow__slide_video videoItem col-12 col-lg-10">
+                                <div class="img_placeholder__wrap img_placeholder__large" style="background-image: url( {{ block.settings.cover_image | img_url: "1160x550", crop: 'center' }} );">
+                                    <div class="video_slide  player" data-property="{videoURL:'{{ block.settings.video_url }}', startAt:0, mute:true, autoPlay:false, loop:true, opacity:1, showControls:false, optimizeDisplay:true, containment:'self', ratio:'16/9', useOnMobile:false }">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    {% when 'customVideo' %}
+                    <div class="container customVideoWrapper">
+                        <div class="col-12 col-lg-10 tapeContent">
+
+                            <button id="playPauseBtn" class="playPauseBtn">
+                                <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="40" cy="40" r="40" fill="#F8C27D"/>
+                                    <path d="M31 26L55.75 40.2894L31 54.5788L31 26Z" fill="#222222"/>
+                                </svg>
+                            </button>
+                            <video id="videotape" style="width: 1160px" playsinline="playsinline" loop="loop" poster="{{ block.settings.cover_image | img_url: "1160x550", crop: 'center' }}">
+                                <source src="https://cdn.shopify.com/s/files/1/0590/3030/7011/files/12.mp4?v=1628083107" type="video/mp4" />
+                                Your browser does not support our video.
+                            </video>
+                            <progress id="progress" style="cursor: pointer;" max="100"
+                                      value="0"></progress>
+                        </div>
+                    </div>
+
+
+                {% endcase %}
+            {% endfor %}
+
+        </div>
+    </div>
+{% endif %}
+
+{% schema %}
+{
+"name": "Video",
+"class": "index-video",
+"settings": [
+{
+"type": "checkbox",
+"id": "hide_section",
+"label": "Hide section",
+"default":   false
+},
+{
+"id": "section_title",
+"type": "text",
+"label": "Title"
+},
+{
+"id": "section_subtitle",
+"type": "text",
+"label": "Subtitle"
+},
+{
+"id": "section_text",
+"type": "richtext",
+"label": "Text"
+}
+],
+"max_blocks": 2,
+"blocks": [
+{
+"type": "youtube",
+"name": "YouTube video",
+"settings": [
+{
+"type": "text",
+"id": "video_url",
+"label": "Youtube link"
+},
+{
+"type": "image_picker",
+"id": "cover_image",
+"label": "Image used as poster with 1160x550px"
+}
+]
+},
+{
+"type": "customVideo",
+"name": "Custom video",
+"settings": [
+{
+"type": "text",
+"id": "video_url",
+"label": "Custom link",
+"info": "Settings/Files/Upload file. Copy Link/paste here in input"
+},
+{
+"type": "image_picker",
+"id": "cover_image",
+"label": "Image used as background (more than 1810px wide)"
+}
+]
+}
+],
+"presets": [
+{
+"name": "Video",
+"category": "Video",
+"blocks": [
+{
+"type": "youtube"
+}
+],
+"settings": {}
+}
+]
+
+}
+
+{% endschema %}
+
+<script>
+    //youtube video
+    jQuery(document).ready(function($) {
+            $(this).find('.video_slide').each(function(i) {
+                $(this).YTPlayer();
+            });
+    });
+
+
+
+//customVideo
+    let playPauseBtn = document.getElementById('playPauseBtn');
+    let video = document.querySelector('#videotape');
+    let progress = document.querySelector('#progress');
+    progress.onclick = videoRewind;
+
+    video.ontimeupdate = progressUpdate;
+
+    playPauseBtn.addEventListener("click", function (){
+        if (video.paused){
+            video.play();
+            progress.style.opacity = "1";
+            playPauseBtn.classList.toggle('stopBtn');
+            playPauseBtn.innerHTML = `<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="40" cy="40" r="40" fill="#F8C27D"/>
+                                        <path d="M29 52.6667H36.3333V27H29V52.6667ZM43.6667 27V52.6667H51V27H43.6667Z" fill="black"/>
+                                        </svg>`;
+
+        } else{
+            video.pause();
+            progress.style.opacity = "0";
+            playPauseBtn.classList.toggle('stopBtn');
+            playPauseBtn.innerHTML = `<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="40" cy="40" r="40" fill="#F8C27D"/>
+                                    <path d="M31 26L55.75 40.2894L31 54.5788L31 26Z" fill="#222222"/>
+                                </svg>`;
+        }
+    });
+
+
+    function progressUpdate() {
+        let d = video.duration;
+        let c = video.currentTime;
+        progress.value = (100 * c) / d;
+
+    }
+
+    function videoRewind() {
+        let w = this.offsetWidth;
+        let o = event.offsetX;
+        this.value = 100 * o / w;
+        video.currentTime = video.duration * (o / w);
+    }
+
+
+</script>
+

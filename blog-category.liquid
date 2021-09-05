@@ -1,0 +1,219 @@
+
+{% paginate blogs[section.settings.blog_count].articles by section.settings.pagination_count %}
+    <div class="blog_listing__main blog_listing__{{ section.settings.size }} {% if settings.sidebar_toggle %}sidebar_layout{% else %}nosidebar_layout{% endif %}">
+        <div class="row">
+            {% for article in blogs[section.settings.blog_count].articles %}
+                        {% case section.settings.size %}
+                            {% when 'big' %}
+                                <div class="col-6 col-md-6 mb-3">
+                                    <div class="article_wrap">
+                                        <article class="article_item">
+                                            <div class="article_image">
+                                                {% if article.image %}
+                                                    {% if settings.sidebar_toggle %}
+                                                        <img class="blur-up lazyload w-100 img-fluid" src="{{ article.image.src | img_url: '100x100', crop: section.settings.img_alignment }}" data-src="{{ article.image.src | img_url: '880x545', crop: section.settings.img_alignment }}" alt="{{ article.image.alt }}">
+                                                    {% else %}
+                                                        <img class="blur-up lazyload w-100 img-fluid" src="{{ article.image.src | img_url: '100x100', crop: section.settings.img_alignment }}" data-src="{{ article.image.src | img_url: '980x545', crop: section.settings.img_alignment }}" alt="{{ article.image.alt }}">
+                                                    {% endif %}
+                                                {% else %}
+                                                    <div class="img_placeholder__wrap">{{ 'image' | placeholder_svg_tag: 'img_placeholder'  }}</div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="article_content">
+                                                <p class="article_info mt-0 d-none">
+                                                    <span>By {{ article.author }}</span><span> on <time class="article_time" datetime="{{ article.published_at | date: '%Y-%m-%dT%H:%M' }}">{{ article.published_at | date: '%B %d, %Y' }}</time></span>
+                                                </p>
+                                                <h3 class="article_title mb-1">
+                                                    <a href="{{ article.url }}">{{ article.title }}</a>
+                                                </h3>
+                                                <div class="rte article_description">
+                                                    {% if article.excerpt.size > 0 %}
+                                                        {{ article.excerpt }}
+                                                    {% else %}
+                                                        {{ article.content | strip_html | truncatewords: 50 }}
+                                                    {% endif %}
+                                                </div>
+
+                                                {%- if section.settings.blog_show_date -%}
+                                                    <span class="articleTimeWrapper">{{ 'blog.articles.created_at' | t }}
+                                                <time class="article_time" datetime="{{ article.published_at | date: '%Y-%m-%dT%H:%M' }}">
+                                                   {{ article.published_at | date: '%b %d, %Y at %H:%M' }} {{ 'blog.articles.by_author' | t }} {{ article.author }}
+                                                </time>
+                                              </span>
+                                                {%- endif -%}
+
+                                                <a class="article_link mt-2" href="{{ article.url }}">{{ 'blog.articles.read_more' | t }}</a>
+                                            </div>
+                                        </article>
+                                    </div>
+                                </div>
+
+                            {% when 'small' %}
+                                <div class="{% if section.settings.pagination_count == '2' or section.settings.pagination_count == '4' %}col-6 mb-3 {% else %}col-12 col-xsm-6 col-lg-4 mb-3{% endif %}">
+                                    <article class="article_item">
+                                        <div class="article_image">
+                                            {% if article.image %}
+                                                {% if settings.sidebar_toggle %}
+                                                    <img class="blur-up lazyload img-fluid w-100" src="{{ article.image.src | img_url: '100x100', crop: section.settings.img_alignment }}" data-src="{{ article.image.src | img_url: '880x545', crop: section.settings.img_alignment }}" alt="{{ article.image.alt }}">
+                                                {% else %}
+                                                    <img class="blur-up lazyload img-fluid w-100" src="{{ article.image.src | img_url: '100x100', crop: section.settings.img_alignment }}" data-src="{{ article.image.src | img_url: '380x324', crop: section.settings.img_alignment }}" alt="{{ article.image.alt }}">
+                                                {% endif %}
+                                            {% else %}
+                                                <div class="img_placeholder__wrap">{{ 'image' | placeholder_svg_tag: 'img_placeholder'  }}</div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="article_content">
+                                            <p class="article_info mt-0 d-none">
+                                                <span>By {{ article.author }}</span><span> on <time class="article_time" datetime="{{ article.published_at | date: '%Y-%m-%dT%H:%M' }}">{{ article.published_at | date: '%B %d, %Y' }}</time></span>
+                                            </p>
+                                            <h3 class="article_title mb-1">
+                                                <a href="{{ article.url }}">{{ article.title | truncate: 50 }}</a>
+                                            </h3>
+
+                                            <div class="rte article_description">
+                                                {% if article.excerpt.size > 0 %}
+                                                    {{ article.excerpt }}
+                                                {% else %}
+                                                    {{ article.content | strip_html | truncatewords: 20 }}
+                                                {% endif %}
+                                            </div>
+
+                                            {%- if section.settings.blog_show_date -%}
+                                                <div class="articleTimeWrapper">{{ 'blog.articles.created_at' | t }}
+                                                <time class="article_time" datetime="{{ article.published_at | date: '%Y-%m-%dT%H:%M' }}">
+                                                    <strong> {{ article.published_at | date: '%b %d, %Y' | upcase }}</strong> at {{ article.published_at | date: '%H:%M' }} {{ 'blog.articles.by_author' | t }} <span>{{ article.author | upcase }}</span>
+                                                </time>
+                                                    <div class="commentCountWrapper">
+                                                        <span class="comments_count">
+                                                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M6 16C6 15.4477 5.55228 15 5 15C2.79086 15 1 13.2091 1 11V5C1 2.79086 2.79086 1 5 1H15C17.2091 1 19 2.79086 19 5V11C19 13.2091 17.2091 15 15 15H9C8.73478 15 8.48043 15.1054 8.29289 15.2929L6 17.5858V16Z" stroke="#5060C9" stroke-width="2" stroke-linejoin="round"/>
+                                                            </svg>
+                                                            {{ article.comments_count }}</span>
+                                                    </div>
+                                              </div>
+                                            {%- endif -%}
+
+                                            <a class="article_link mt-2" href="{{ article.url }}">{{ 'blog.articles.read_more' | t }} <svg width="6" height="9" viewBox="0 0 6 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M1.5 0L0 1.5L3 4.5L2.62268e-07 7.5L1.5 9L6 4.5L1.5 0Z" fill="#5061C9"/>
+                                                </svg>
+                                            </a>
+                                        </div>
+                                    </article>
+                                </div>
+                        {% endcase %}
+                    {% endfor %}
+
+        </div>
+    </div>
+    <div id="pagination" class="pagination blog_pagination mt-3">
+        {% if paginate.pages > 1 %}
+            {% assign A = paginate.current_offset | plus:1 %}
+            {% assign B = paginate.items %}
+            {% assign C = paginate.current_offset | plus:paginate.page_size %}
+
+            {% if paginate.current_page == paginate.pages %}
+                {% if A == B %}
+                    <p class="m-0">Showing  {{ A }} off {{ pagination_items }} {{ paginate.items }}</p>
+                {% else %}
+                    <p class="m-0">Showing  {{ A }} – {{ B }} {{ pagination_items }} off {{ paginate.items }}</p>
+                {% endif %}
+            {% else %}
+                <p>Showing {{ A }} – {{ C }} {{ pagination_items }} off {{ paginate.items }}</p>
+            {% endif %}
+        {% endif %}
+        <div class="mt-2 d-flex align-items-center flex-wrap justify-content-center">
+            {{ paginate | default_pagination }}
+        </div>
+    </div>
+    {% endpaginate %}
+
+
+
+
+
+
+{% schema %}
+{
+"name": "Blog page",
+"class": "section_template section_template__blog bl_type_2",
+"settings": [
+{
+"type": "blog",
+"id": "blog_count",
+"label": "Blog"
+},
+            {
+            "type": "checkbox",
+            "id": "blog_show_date",
+            "label": "Show article creating date",
+            "default": false
+            },
+{
+"type": "select",
+"id": "size",
+"label": "Size",
+"default": "small",
+"options": [
+{
+"value": "small",
+"label": "Small"
+},
+{
+"value": "big",
+"label": "Big"
+}
+]
+},
+{
+"type": "select",
+"id": "pagination_count",
+"label": "Paginated by",
+"options": [
+{
+"value": "2",
+"label": "2"
+},
+{
+"value": "3",
+"label": "3"
+},
+{
+"value": "4",
+"label": "4"
+},
+{
+"value": "6",
+"label": "6"
+},
+{
+"value": "9",
+"label": "9"
+},
+{
+"value": "12",
+"label": "12"
+}
+]
+},
+{
+"type": "select",
+"id": "img_alignment",
+"label": "Images alignment",
+"options": [
+{
+"value": "top",
+"label": "Top"
+},
+{
+"value": "center",
+"label": "Middle"
+},
+{
+"value": "bottom",
+"label": "Bottom"
+}
+]
+}
+]
+}
+{% endschema %}

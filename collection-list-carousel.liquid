@@ -1,0 +1,151 @@
+{% if section.settings.hide_section == false %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 col-lg-4 sliderInfo">
+            <h3>{{ section.settings.section_title }}</h3>
+                <div class="description">
+                    {{ section.settings.section_description }}
+                </div>
+                <a class="btn" href="{{ section.settings.button_link }}">{{ section.settings.button_title }}</a>
+            </div>
+            <div class="col-12 col-lg-8 collectionSliderWrapper">
+                <div class="swiper-container mySwiper">
+                    <div class="swiper-wrapper">
+                        {% for block in section.blocks %}
+                            {% case block.type %}
+                                {% when 'item' %}
+                                    <div class="swiper-slide">
+                                        {% if block.settings.image.size > 0 %}
+                                            <img style="width: 100%" class="banner_image lazyload blur-up" src="{{ block.settings.image | img_url: '390x617', crop: 'center' }}" alt="{{ block.settings.image.alt }}"
+                                                 data-src="{{ block.settings.image | img_url: '390x617', crop: 'center' }}"
+                                                 data-widths="[360, 540, 720, 900, 1080, 1296, 1512, 1728, 1810]"
+                                            >
+
+                                        {% endif %}
+
+                                        <a class="btn_link" href="{{ block.settings.button_link }}">
+                                            {{ block.settings.button_title }}
+                                            <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M18.9 10.4999L13.3 4.8999M18.9 10.4999L13.3 16.0999M18.9 10.4999H1.39999" stroke="#222222"/>
+                                            </svg>
+
+                                        </a>
+                                    </div>
+
+
+                            {% endcase %}
+                        {% endfor %}
+
+
+                    </div>
+                    <div class="swiper-button-prev">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2 10.0001L7.33333 4.66675M2 10.0001L7.33333 15.3334M2 10.0001H18.6667" stroke="#222222"/>
+                        </svg>
+
+                    </div>
+                    <div class="swiper-button-next">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18 10.0001L12.6667 4.66675M18 10.0001L12.6667 15.3334M18 10.0001H1.33333" stroke="#222222"/>
+                        </svg>
+
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+{% endif %}
+<script>
+    var swiper = new Swiper(".mySwiper", {
+        slidesPerView: "auto",
+        spaceBetween: 50,
+        freeMode: true,
+        breakpoints: {
+            991: {
+                spaceBetween: 15,
+            }
+
+        },
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        }
+    });
+</script>
+{% schema %}
+{
+"name": "Collection with carousel",
+"class": "collection-list-with-carousel",
+"settings": [
+{
+"type": "checkbox",
+"id": "hide_section",
+"label": "Hide section",
+"default":   false
+},
+{
+"id": "section_title",
+"type": "text",
+"label": "Title"
+},
+{
+"id": "section_description",
+"type": "richtext",
+"label": "Description"
+},
+{
+"id": "button_link",
+"type": "url",
+"label": "Button"
+},
+{
+"id": "button_title",
+"type": "text",
+"label": "Button title"
+}
+],
+"max_blocks": 12,
+"blocks": [
+{
+"type": "item",
+"name": "Item",
+"settings": [
+{
+"type": "image_picker",
+"id": "image",
+"label": "Image"
+},
+{
+"type": "text",
+"id": "button_title",
+"label": "Button title"
+},
+{
+"type": "url",
+"id": "button_link",
+"label": "Button link"
+}
+
+]
+}
+],
+"presets": [
+{
+"name": "Collection list with carousel",
+"category": "Collection",
+"blocks": [
+{
+"type": "item"
+}
+],
+"settings": {}
+}
+]
+
+}
+
+{% endschema %}
+
